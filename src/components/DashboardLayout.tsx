@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { 
-  Car, 
   Users, 
   Settings, 
   Calendar, 
@@ -27,7 +26,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Calendar, current: location.pathname === '/' },
-    { name: 'Services', href: '/services', icon: Car, current: location.pathname === '/services' },
+    { name: 'Services', href: '/services', icon: Settings, current: location.pathname === '/services' },
     { name: 'Customers', href: '/customers', icon: Users, current: location.pathname === '/customers' },
     { name: 'Inventory', href: '/inventory', icon: Settings, current: location.pathname === '/inventory' },
   ];
@@ -66,7 +65,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <div className="flex items-center justify-between p-6">
             <div className="flex items-center space-x-3">
               <div className="p-2 rounded-lg bg-automotive-blue/20 backdrop-blur-md">
-                <Car className="h-6 w-6 text-automotive-blue" />
+                <img 
+                  src="/lovable-uploads/5a5256dc-6cf0-4b89-9a49-8302100ef5df.png" 
+                  alt="Paulstar" 
+                  className="h-8 w-auto object-contain"
+                />
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-white">Paulstar</h1>

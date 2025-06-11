@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -7,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-import { Shield, Car, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
   const { user, login, verify2FA, needs2FA, tempUser, isLoading } = useAuth();
@@ -122,8 +121,12 @@ const LoginPage: React.FC = () => {
       <Card className="w-full max-w-md glass-card border-glass-200 animate-fade-in relative z-10">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="p-3 rounded-full bg-automotive-blue/20 backdrop-blur-md">
-              <Car className="h-8 w-8 text-automotive-blue" />
+            <div className="p-3 rounded-lg bg-automotive-blue/20 backdrop-blur-md">
+              <img 
+                src="/lovable-uploads/5a5256dc-6cf0-4b89-9a49-8302100ef5df.png" 
+                alt="Paulstar Auto Care" 
+                className="h-12 w-auto object-contain"
+              />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold">Paulstar Auto Care</CardTitle>
