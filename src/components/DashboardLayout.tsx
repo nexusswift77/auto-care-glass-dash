@@ -11,7 +11,9 @@ import {
   Search,
   MenuIcon,
   X,
-  LogOut
+  LogOut,
+  Wrench,
+  Archive
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -24,22 +26,47 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const navigation = [
-    { name: 'Dashboard', href: '/', icon: Calendar, current: location.pathname === '/' },
-    { name: 'Services', href: '/services', icon: Settings, current: location.pathname === '/services' },
-    { name: 'Customers', href: '/customers', icon: Users, current: location.pathname === '/customers' },
-    { name: 'Inventory', href: '/inventory', icon: Settings, current: location.pathname === '/inventory' },
-  ];
+  const getNavigationForRole = () => {
+    const baseNav = [
+      { name: 'Dashboard', href: '/', icon: Calendar, current: location.pathname === '/' },
+    ];
 
-  // Add staff management for admin/manager only
-  if (user?.role === 'admin' || user?.role === 'manager') {
-    navigation.splice(3, 0, { 
-      name: 'Staff', 
-      href: '/staff', 
-      icon: User, 
-      current: location.pathname === '/staff' 
-    });
-  }
+    if (user?.role === 'super_admin') {
+      return [
+        ...baseNav,
+        { name: 'Services', href: '/services', icon: Wrench, current: location.pathname === '/services' },
+        { name: 'Staff Management', href: '/staff', icon: Users, current: location.pathname === '/staff' },
+        { name: 'Customers', href: '/customers', icon: User, current: location.pathname === '/customers' },
+        { name: 'Inventory', href: '/inventory', icon: Archive, current: location.pathname === '/inventory' },
+        { name: 'System Settings', href: '/settings', icon: Settings, current: location.pathname === '/settings' },
+      ];
+    } else if (user?.role === 'manager') {
+      return [
+        ...baseNav,
+        { name: 'Services', href: '/services', icon: Wrench, current: location.pathname === '/services' },
+        { name: 'Customers', href: '/customers', icon: User, current: location.pathname === '/customers' },
+        { name: 'Inventory', href: '/inventory', icon: Archive, current: location.pathname === '/inventory' },
+      ];
+    } else {
+      // Mechanic role
+      return [
+        ...baseNav,
+        { name: 'My Services', href: '/services', icon: Wrench, current: location.pathname === '/services' },
+        { name: 'Parts Used', href: '/inventory', icon: Archive, current: location.pathname === '/inventory' },
+      ];
+    }
+  };
+
+  const navigation = getNavigationForRole();
+
+  const getRoleDisplayName = (role: string) => {
+    switch (role) {
+      case 'super_admin': return 'Super Admin';
+      case 'manager': return 'Manager';
+      case 'mechanic': return 'Mechanic';
+      default: return role;
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -64,16 +91,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {/* Logo and close button */}
           <div className="flex items-center justify-between p-6">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-automotive-blue/20 backdrop-blur-md">
+              <div className="p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20">
                 <img 
                   src="/lovable-uploads/5a5256dc-6cf0-4b89-9a49-8302100ef5df.png" 
                   alt="Paulstar" 
-                  className="h-8 w-auto object-contain"
+                  className="h-10 w-auto object-contain brightness-110 contrast-125"
+                  style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}
                 />
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-white">Paulstar</h1>
-                <p className="text-xs text-muted-foreground">Auto Care</p>
+                <p className="text-xs text-paulstar-gold">Auto Care</p>
               </div>
             </div>
             <Button
@@ -97,7 +125,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   className={`
                     flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
                     ${item.current 
-                      ? 'bg-automotive-blue/30 text-white shadow-glass-sm' 
+                      ? 'bg-paulstar-blue/30 text-white shadow-glass-sm border border-paulstar-blue/40' 
                       : 'text-muted-foreground hover:bg-glass-100 hover:text-white'
                     }
                   `}
@@ -113,12 +141,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {/* User info and logout */}
           <div className="p-4 border-t border-glass-200">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 bg-automotive-blue/20 rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-automotive-blue" />
+              <div className="w-8 h-8 bg-paulstar-blue/20 rounded-full flex items-center justify-center border border-paulstar-blue/30">
+                <User className="h-4 w-4 text-paulstar-blue" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">{user?.name}</p>
-                <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+                <p className="text-xs text-paulstar-gold">{getRoleDisplayName(user?.role || '')}</p>
               </div>
             </div>
             <Button
@@ -166,7 +194,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </Button>
             <div className="text-right">
               <p className="text-sm font-medium text-white">{user?.name}</p>
-              <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+              <p className="text-xs text-paulstar-gold">{getRoleDisplayName(user?.role || '')}</p>
             </div>
           </div>
         </header>

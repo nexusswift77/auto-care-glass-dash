@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type UserRole = 'admin' | 'manager' | 'technician';
+export type UserRole = 'super_admin' | 'manager' | 'mechanic';
 
 export interface User {
   id: string;
@@ -38,27 +38,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [needs2FA, setNeeds2FA] = useState(false);
   const [tempUser, setTempUser] = useState<User | null>(null);
 
-  // Mock users for demo - in production this would connect to Supabase
+  // Mock users with new role structure
   const mockUsers: User[] = [
     {
       id: '1',
-      email: 'admin@paulstar.com',
-      name: 'Admin User',
-      role: 'admin',
+      email: 'superadmin@paulstar.com',
+      name: 'Super Admin',
+      role: 'super_admin',
       isActive: true,
     },
     {
       id: '2',
       email: 'manager@paulstar.com', 
-      name: 'Manager User',
+      name: 'Workshop Manager',
       role: 'manager',
       isActive: true,
     },
     {
       id: '3',
-      email: 'tech@paulstar.com',
-      name: 'Tech User', 
-      role: 'technician',
+      email: 'mechanic@paulstar.com',
+      name: 'Lead Mechanic',
+      role: 'mechanic',
       isActive: true,
     }
   ];
@@ -88,22 +88,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Mock authentication - in production this would be handled by Supabase
+    // Mock authentication
     const foundUser = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase() && u.isActive);
     console.log('AuthProvider: Found user:', foundUser);
     
     if (foundUser && password === 'password123') {
       console.log('AuthProvider: Password correct, checking role for 2FA');
-      // For admin and manager roles, require 2FA
-      if (foundUser.role === 'admin' || foundUser.role === 'manager') {
+      // Super Admin and Manager require 2FA
+      if (foundUser.role === 'super_admin' || foundUser.role === 'manager') {
         console.log('AuthProvider: 2FA required for role:', foundUser.role);
         setTempUser(foundUser);
         setNeeds2FA(true);
         setIsLoading(false);
         return true;
       } else {
-        console.log('AuthProvider: Direct login for technician');
-        // Technician can login directly
+        console.log('AuthProvider: Direct login for mechanic');
+        // Mechanic can login directly
         const updatedUser = { ...foundUser, lastLogin: new Date().toISOString() };
         setUser(updatedUser);
         localStorage.setItem('paulstar_user', JSON.stringify(updatedUser));

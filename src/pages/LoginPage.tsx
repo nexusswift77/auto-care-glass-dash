@@ -113,24 +113,25 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-4 -right-4 w-72 h-72 bg-automotive-blue/10 rounded-full blur-3xl glass-float"></div>
-        <div className="absolute -bottom-8 -left-8 w-96 h-96 bg-automotive-teal/10 rounded-full blur-3xl glass-float" style={{ animationDelay: '-3s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl glass-float" style={{ animationDelay: '-1.5s' }}></div>
+        <div className="absolute -top-4 -right-4 w-72 h-72 bg-paulstar-blue/10 rounded-full blur-3xl glass-float"></div>
+        <div className="absolute -bottom-8 -left-8 w-96 h-96 bg-paulstar-gold/10 rounded-full blur-3xl glass-float" style={{ animationDelay: '-3s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-paulstar-orange/5 rounded-full blur-3xl glass-float" style={{ animationDelay: '-1.5s' }}></div>
       </div>
 
       <Card className="w-full max-w-md glass-card border-glass-200 animate-fade-in relative z-10">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="p-3 rounded-lg bg-automotive-blue/20 backdrop-blur-md">
+            <div className="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
               <img 
                 src="/lovable-uploads/5a5256dc-6cf0-4b89-9a49-8302100ef5df.png" 
                 alt="Paulstar Auto Care" 
-                className="h-12 w-auto object-contain"
+                className="h-16 w-auto object-contain brightness-110 contrast-125"
+                style={{ filter: 'drop-shadow(0 2px 12px rgba(255,255,255,0.4))' }}
               />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Paulstar Auto Care</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl font-bold text-white">Paulstar Auto Care</CardTitle>
+          <CardDescription className="text-paulstar-gold">
             {needs2FA ? 'Enter verification code' : 'Sign in to your admin dashboard'}
           </CardDescription>
         </CardHeader>
@@ -240,13 +241,13 @@ const LoginPage: React.FC = () => {
           )}
           
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p className="font-semibold">Demo Credentials:</p>
+            <p className="font-semibold text-paulstar-gold">Demo Credentials:</p>
             <div className="space-y-1 mt-2">
-              <p><span className="font-medium">Admin:</span> admin@paulstar.com / password123</p>
-              <p><span className="font-medium">Manager:</span> manager@paulstar.com / password123</p>
-              <p><span className="font-medium">Tech:</span> tech@paulstar.com / password123</p>
+              <p><span className="font-medium text-paulstar-blue">Super Admin:</span> superadmin@paulstar.com / password123</p>
+              <p><span className="font-medium text-paulstar-blue">Manager:</span> manager@paulstar.com / password123</p>
+              <p><span className="font-medium text-paulstar-blue">Mechanic:</span> mechanic@paulstar.com / password123</p>
             </div>
-            <p className="mt-3 text-xs opacity-75">2FA Code: Any 6 digits for admin/manager</p>
+            <p className="mt-3 text-xs opacity-75 text-paulstar-gold">2FA Code: Any 6 digits for Super Admin/Manager</p>
           </div>
         </CardContent>
       </Card>

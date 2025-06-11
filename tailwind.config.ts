@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -75,8 +74,18 @@ export default {
 					400: 'rgba(255, 255, 255, 0.3)',
 					500: 'rgba(255, 255, 255, 0.4)',
 				},
+				// Paulstar brand colors extracted from logo
+				paulstar: {
+					blue: '#1E3A8A',     // Deep blue from logo
+					gold: '#F59E0B',      // Gold/yellow from logo
+					orange: '#EA580C',    // Orange accent from logo
+					navy: '#0F172A',      // Dark navy for backgrounds
+					slate: '#334155',     // Medium slate
+					cream: '#FEF3C7',     // Light cream for text
+				},
+				// Keep automotive colors for backward compatibility
 				automotive: {
-					blue: '#1E40AF',
+					blue: '#1E3A8A',
 					teal: '#0891B2',
 					slate: '#334155',
 					dark: '#0F172A',

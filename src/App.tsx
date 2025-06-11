@@ -36,7 +36,7 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/staff" element={
-              <ProtectedRoute roles={['admin', 'manager']}>
+              <ProtectedRoute roles={['super_admin']}>
                 <StaffPage />
               </ProtectedRoute>
             } />
@@ -46,7 +46,7 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/customers" element={
-              <ProtectedRoute>
+              <ProtectedRoute roles={['super_admin', 'manager']}>
                 <CustomersPage />
               </ProtectedRoute>
             } />
