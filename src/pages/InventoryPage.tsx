@@ -1,86 +1,88 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Package, AlertTriangle, Plus, Edit, TrendingDown } from 'lucide-react';
+import { Plus, Package, AlertCircle, CheckCircle, XCircle, Eye } from 'lucide-react';
+import AddInventoryModal from '@/components/AddInventoryModal';
 
 const InventoryPage: React.FC = () => {
-  // Mock inventory data
-  const inventory = [
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [inventory, setInventory] = useState([
     {
-      id: 'ITM-001',
+      id: '1',
       name: 'Engine Oil 5W-30',
-      sku: 'OIL-5W30-5L',
-      currentStock: 25,
-      reorderLevel: 10,
-      supplier: 'AutoParts Inc.',
-      unitPrice: 45.99,
-      category: 'Fluids'
+      category: 'Fluids & Oils',
+      price: 'KSH 2,500',
+      quantity: 25,
+      status: 'in-stock',
+      supplier: 'AutoParts Kenya',
+      lastUpdated: '2024-01-15'
     },
     {
-      id: 'ITM-002',
-      name: 'Oil Filter',
-      sku: 'FLT-OIL-STD',
-      currentStock: 5,
-      reorderLevel: 15,
-      supplier: 'FilterPro',
-      unitPrice: 12.50,
-      category: 'Filters'
+      id: '2',
+      name: 'Brake Pads (Front)',
+      category: 'Brake System',
+      price: 'KSH 4,500',
+      quantity: 8,
+      status: 'low-stock',
+      supplier: 'Brakes Direct',
+      lastUpdated: '2024-01-14'
     },
     {
-      id: 'ITM-003',
-      name: 'Brake Pads (Front Set)',
-      sku: 'BRK-PAD-FRT',
-      currentStock: 8,
-      reorderLevel: 5,
-      supplier: 'BrakeTech',
-      unitPrice: 89.99,
-      category: 'Brake Parts'
-    },
-    {
-      id: 'ITM-004',
+      id: '3',
       name: 'Air Filter',
-      sku: 'FLT-AIR-STD',
-      currentStock: 2,
-      reorderLevel: 8,
-      supplier: 'FilterPro',
-      unitPrice: 18.75,
-      category: 'Filters'
+      category: 'Engine Parts',
+      price: 'KSH 1,200',
+      quantity: 0,
+      status: 'out-of-stock',
+      supplier: 'Filter Pro',
+      lastUpdated: '2024-01-13'
     },
     {
-      id: 'ITM-005',
-      name: 'Brake Fluid DOT 4',
-      sku: 'BRK-FLD-DOT4',
-      currentStock: 18,
-      reorderLevel: 5,
-      supplier: 'AutoParts Inc.',
-      unitPrice: 28.50,
-      category: 'Fluids'
+      id: '4',
+      name: 'Spark Plugs Set',
+      category: 'Engine Parts',
+      price: 'KSH 3,200',
+      quantity: 15,
+      status: 'in-stock',
+      supplier: 'Ignition Parts',
+      lastUpdated: '2024-01-15'
     }
-  ];
+  ]);
 
-  const getStockStatus = (current: number, reorder: number) => {
-    if (current <= reorder) {
-      return { 
-        status: 'low', 
-        badge: <Badge className="bg-red-500/20 text-red-300 border-red-500/30">Low Stock</Badge> 
-      };
-    } else if (current <= reorder * 1.5) {
-      return { 
-        status: 'medium', 
-        badge: <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">Medium</Badge> 
-      };
-    } else {
-      return { 
-        status: 'good', 
-        badge: <Badge className="bg-green-500/20 text-green-300 border-green-500/30">Good</Badge> 
-      };
-    }
+  const handleAddItem = (newItem: any) => {
+    setInventory([...inventory, newItem]);
   };
 
-  const lowStockItems = inventory.filter(item => item.currentStock <= item.reorderLevel);
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'in-stock':
+        return (
+          <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+            <CheckCircle className="mr-1 h-3 w-3" />
+            In Stock
+          </Badge>
+        );
+      case 'low-stock':
+        return (
+          <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
+            <AlertCircle className="mr-1 h-3 w-3" />
+            Low Stock
+          </Badge>
+        );
+      case 'out-of-stock':
+        return (
+          <Badge className="bg-red-500/20 text-red-300 border-red-500/30">
+            <XCircle className="mr-1 h-3 w-3" />
+            Out of Stock
+          </Badge>
+        );
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -89,144 +91,78 @@ const InventoryPage: React.FC = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white">Inventory Management</h1>
-            <p className="text-muted-foreground">Track parts and supplies</p>
+            <p className="text-muted-foreground">Track and manage auto parts and supplies</p>
           </div>
-          <Button className="glass-button-primary">
+          <Button 
+            className="glass-button-primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add Item
           </Button>
         </div>
 
-        {/* Low Stock Alert */}
-        {lowStockItems.length > 0 && (
-          <Card className="glass-card border-red-500/30">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-red-300">
-                <AlertTriangle className="h-5 w-5" />
-                <span>Low Stock Alert</span>
-              </CardTitle>
-              <CardDescription>
-                {lowStockItems.length} item(s) need restocking
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {lowStockItems.map((item) => (
-                  <div key={item.id} className="flex justify-between items-center p-2 bg-red-500/10 rounded-lg">
-                    <span className="text-sm text-white">{item.name}</span>
-                    <span className="text-sm text-red-300">{item.currentStock} remaining</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Inventory Grid */}
-        <div className="grid grid-cols-1 gap-4">
-          {inventory.map((item) => {
-            const stockStatus = getStockStatus(item.currentStock, item.reorderLevel);
-            
-            return (
-              <Card key={item.id} className="glass-card">
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
-                    {/* Item Info */}
-                    <div className="md:col-span-2">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-automotive-blue/20 rounded-lg flex items-center justify-center">
-                          <Package className="h-5 w-5 text-automotive-blue" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-white">{item.name}</h3>
-                          <p className="text-xs text-muted-foreground">{item.sku}</p>
-                          <Badge variant="outline" className="mt-1 text-xs">
-                            {item.category}
-                          </Badge>
-                        </div>
-                      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {inventory.map((item) => (
+            <Card key={item.id} className="glass-card">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-paulstar-blue/20 rounded-full flex items-center justify-center">
+                      <Package className="h-5 w-5 text-paulstar-blue" />
                     </div>
-
-                    {/* Stock Level */}
-                    <div className="text-center">
-                      <p className="text-2xl font-bold text-white">{item.currentStock}</p>
-                      <p className="text-xs text-muted-foreground">Current Stock</p>
-                      {stockStatus.badge}
-                    </div>
-
-                    {/* Reorder Level */}
-                    <div className="text-center">
-                      <p className="text-lg font-medium text-white">{item.reorderLevel}</p>
-                      <p className="text-xs text-muted-foreground">Reorder Level</p>
-                    </div>
-
-                    {/* Supplier & Price */}
-                    <div>
-                      <p className="text-sm font-medium text-white">{item.supplier}</p>
-                      <p className="text-sm text-muted-foreground">${item.unitPrice}</p>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex space-x-2">
-                      <Button size="sm" className="glass-button">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      {item.currentStock <= item.reorderLevel && (
-                        <Button size="sm" className="glass-button-primary">
-                          Reorder
-                        </Button>
-                      )}
+                    <div className="flex-1">
+                      <CardTitle className="text-white text-sm">{item.name}</CardTitle>
+                      <CardDescription className="text-xs">{item.category}</CardDescription>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                  {getStatusBadge(item.status)}
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Price:</span>
+                    <span className="text-paulstar-gold font-medium">{item.price}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Quantity:</span>
+                    <span className="text-white">{item.quantity} units</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Supplier:</span>
+                    <span className="text-white text-xs">{item.supplier}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Updated:</span>
+                    <span className="text-white text-xs">{item.lastUpdated}</span>
+                  </div>
+                </div>
+
+                <div className="flex space-x-2 pt-2">
+                  <Button size="sm" className="glass-button flex-1">
+                    <Eye className="mr-1 h-4 w-4" />
+                    Review
+                  </Button>
+                  <Button size="sm" variant="outline" className="glass-button">
+                    Edit
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Inventory Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Package className="h-5 w-5 text-automotive-blue" />
-                <span>Total Items</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-white">{inventory.length}</p>
-              <p className="text-sm text-muted-foreground">Tracked items</p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <AlertTriangle className="h-5 w-5 text-yellow-400" />
-                <span>Low Stock</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-yellow-400">{lowStockItems.length}</p>
-              <p className="text-sm text-muted-foreground">Items need restock</p>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <TrendingDown className="h-5 w-5 text-automotive-teal" />
-                <span>Total Value</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-white">
-                ${inventory.reduce((sum, item) => sum + (item.currentStock * item.unitPrice), 0).toFixed(2)}
-              </p>
-              <p className="text-sm text-muted-foreground">Current inventory value</p>
-            </CardContent>
-          </Card>
-        </div>
+        <AddInventoryModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAddItem={handleAddItem}
+        />
       </div>
     </DashboardLayout>
   );

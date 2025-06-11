@@ -1,29 +1,30 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { User, Mail, Phone, Shield, Plus, Edit, UserX } from 'lucide-react';
+import AddStaffModal from '@/components/AddStaffModal';
 
 const StaffPage: React.FC = () => {
-  // Mock staff data
-  const staff = [
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [staff, setStaff] = useState([
     {
       id: '1',
-      name: 'Admin User',
-      email: 'admin@paulstar.com',
-      phone: '+1 234 567 8901',
-      role: 'admin',
+      name: 'Super Admin',
+      email: 'superadmin@paulstar.com',
+      phone: '+254 234 567 8901',
+      role: 'super_admin',
       isActive: true,
       lastLogin: '2024-01-15 09:30 AM',
       permissions: ['All Access']
     },
     {
       id: '2',
-      name: 'Manager User',
+      name: 'Workshop Manager',
       email: 'manager@paulstar.com',
-      phone: '+1 234 567 8902',
+      phone: '+254 234 567 8902',
       role: 'manager',
       isActive: true,
       lastLogin: '2024-01-15 08:15 AM',
@@ -31,34 +32,28 @@ const StaffPage: React.FC = () => {
     },
     {
       id: '3',
-      name: 'Tech User',
-      email: 'tech@paulstar.com',
-      phone: '+1 234 567 8903',
-      role: 'technician',
+      name: 'Lead Mechanic',
+      email: 'mechanic@paulstar.com',
+      phone: '+254 234 567 8903',
+      role: 'mechanic',
       isActive: true,
       lastLogin: '2024-01-15 07:45 AM',
       permissions: ['Service Logging', 'Inventory Usage']
-    },
-    {
-      id: '4',
-      name: 'John Doe',
-      email: 'john.doe@paulstar.com',
-      phone: '+1 234 567 8904',
-      role: 'technician',
-      isActive: false,
-      lastLogin: '2024-01-10 03:20 PM',
-      permissions: ['Service Logging', 'Inventory Usage']
     }
-  ];
+  ]);
+
+  const handleAddStaff = (newStaff: any) => {
+    setStaff([...staff, newStaff]);
+  };
 
   const getRoleBadge = (role: string) => {
     switch (role) {
-      case 'admin':
-        return <Badge className="bg-red-500/20 text-red-300 border-red-500/30">Admin</Badge>;
+      case 'super_admin':
+        return <Badge className="bg-red-500/20 text-red-300 border-red-500/30">Super Admin</Badge>;
       case 'manager':
         return <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">Manager</Badge>;
-      case 'technician':
-        return <Badge className="bg-green-500/20 text-green-300 border-green-500/30">Technician</Badge>;
+      case 'mechanic':
+        return <Badge className="bg-green-500/20 text-green-300 border-green-500/30">Mechanic</Badge>;
       default:
         return <Badge variant="secondary">{role}</Badge>;
     }
@@ -73,7 +68,10 @@ const StaffPage: React.FC = () => {
             <h1 className="text-2xl font-bold text-white">Staff Management</h1>
             <p className="text-muted-foreground">Manage team members and their access levels</p>
           </div>
-          <Button className="glass-button-primary">
+          <Button 
+            className="glass-button-primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add Staff Member
           </Button>
@@ -86,8 +84,8 @@ const StaffPage: React.FC = () => {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-automotive-blue/20 rounded-full flex items-center justify-center">
-                      <User className="h-5 w-5 text-automotive-blue" />
+                    <div className="w-10 h-10 bg-paulstar-blue/20 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-paulstar-blue" />
                     </div>
                     <div>
                       <CardTitle className="text-white">{member.name}</CardTitle>
@@ -114,11 +112,11 @@ const StaffPage: React.FC = () => {
                 {/* Contact Info */}
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2 text-sm">
-                    <Mail className="h-4 w-4 text-automotive-teal" />
+                    <Mail className="h-4 w-4 text-paulstar-gold" />
                     <span className="text-muted-foreground">{member.email}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm">
-                    <Phone className="h-4 w-4 text-automotive-teal" />
+                    <Phone className="h-4 w-4 text-paulstar-gold" />
                     <span className="text-muted-foreground">{member.phone}</span>
                   </div>
                 </div>
@@ -126,7 +124,7 @@ const StaffPage: React.FC = () => {
                 {/* Permissions */}
                 <div>
                   <h4 className="text-sm font-medium text-white mb-2 flex items-center">
-                    <Shield className="h-4 w-4 mr-1 text-automotive-blue" />
+                    <Shield className="h-4 w-4 mr-1 text-paulstar-blue" />
                     Permissions
                   </h4>
                   <div className="flex flex-wrap gap-1">
@@ -158,7 +156,7 @@ const StaffPage: React.FC = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium text-white">Admin</h4>
+                <h4 className="font-medium text-white">Super Admin</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Full system access</li>
                   <li>• User management</li>
@@ -170,23 +168,29 @@ const StaffPage: React.FC = () => {
                 <h4 className="font-medium text-white">Manager</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Service management</li>
-                  <li>• Staff oversight</li>
+                  <li>• Inventory management</li>
                   <li>• Customer management</li>
                   <li>• Reports and analytics</li>
                 </ul>
               </div>
               <div className="space-y-2">
-                <h4 className="font-medium text-white">Technician</h4>
+                <h4 className="font-medium text-white">Mechanic</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Service logging</li>
                   <li>• Task management</li>
-                  <li>• Inventory usage</li>
-                  <li>• Basic reporting</li>
+                  <li>• Inventory usage tracking</li>
+                  <li>• Daily work reports</li>
                 </ul>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        <AddStaffModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAddStaff={handleAddStaff}
+        />
       </div>
     </DashboardLayout>
   );

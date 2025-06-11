@@ -11,6 +11,7 @@ import ServicesPage from "./pages/ServicesPage";
 import StaffPage from "./pages/StaffPage";
 import InventoryPage from "./pages/InventoryPage";
 import CustomersPage from "./pages/CustomersPage";
+import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -48,6 +49,11 @@ const App = () => (
             <Route path="/customers" element={
               <ProtectedRoute roles={['super_admin', 'manager']}>
                 <CustomersPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute roles={['super_admin']}>
+                <SettingsPage />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
