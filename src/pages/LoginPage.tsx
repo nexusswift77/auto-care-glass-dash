@@ -16,13 +16,19 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [twoFACode, setTwoFACode] = useState('');
 
+  // Debug logging
+  console.log('LoginPage render - user:', user, 'needs2FA:', needs2FA, 'isLoading:', isLoading);
+
   // Redirect if already logged in
   if (user) {
+    console.log('User already logged in, redirecting to dashboard');
     return <Navigate to="/" replace />;
   }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('Login attempt with:', email, password.length > 0 ? '[password provided]' : '[no password]');
     
     if (!email || !password) {
       toast({
@@ -33,24 +39,41 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    const success = await login(email, password);
-    
-    if (!success && !needs2FA) {
+    try {
+      const success = await login(email, password);
+      console.log('Login result:', success, 'needs2FA:', needs2FA);
+      
+      if (!success && !needs2FA) {
+        toast({
+          title: "Login Failed",
+          description: "Invalid email or password. Try: admin@paulstar.com / password123",
+          variant: "destructive",
+        });
+      } else if (needs2FA) {
+        toast({
+          title: "2FA Required",
+          description: "Please enter the verification code (any 6 digits for demo)",
+        });
+      } else if (success && !needs2FA) {
+        toast({
+          title: "Welcome!",
+          description: "Successfully logged in",
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       toast({
-        title: "Login Failed",
-        description: "Invalid email or password",
+        title: "Error",
+        description: "An unexpected error occurred during login",
         variant: "destructive",
-      });
-    } else if (needs2FA) {
-      toast({
-        title: "2FA Required",
-        description: "Please enter the verification code sent to your device",
       });
     }
   };
 
   const handle2FA = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('2FA attempt with code:', twoFACode);
     
     if (twoFACode.length !== 6) {
       toast({
@@ -61,18 +84,28 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    const success = await verify2FA(twoFACode);
-    
-    if (!success) {
+    try {
+      const success = await verify2FA(twoFACode);
+      console.log('2FA result:', success);
+      
+      if (!success) {
+        toast({
+          title: "Verification Failed",
+          description: "Invalid verification code. Try any 6 digits for demo.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Welcome!",
+          description: "Successfully logged in",
+        });
+      }
+    } catch (error) {
+      console.error('2FA error:', error);
       toast({
-        title: "Verification Failed",
-        description: "Invalid verification code",
+        title: "Error",
+        description: "An unexpected error occurred during verification",
         variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Welcome!",
-        description: "Successfully logged in",
       });
     }
   };
@@ -112,6 +145,7 @@ const LoginPage: React.FC = () => {
                   className="glass-input"
                   placeholder="admin@paulstar.com"
                   disabled={isLoading}
+                  autoComplete="email"
                 />
               </div>
               
@@ -126,6 +160,7 @@ const LoginPage: React.FC = () => {
                     className="glass-input pr-10"
                     placeholder="Enter your password"
                     disabled={isLoading}
+                    autoComplete="current-password"
                   />
                   <Button
                     type="button"
@@ -180,6 +215,7 @@ const LoginPage: React.FC = () => {
                   placeholder="000000"
                   maxLength={6}
                   disabled={isLoading}
+                  autoComplete="one-time-code"
                 />
               </div>
               
@@ -201,11 +237,13 @@ const LoginPage: React.FC = () => {
           )}
           
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Demo Credentials:</p>
-            <p>admin@paulstar.com / password123</p>
-            <p>manager@paulstar.com / password123</p>
-            <p>tech@paulstar.com / password123</p>
-            <p className="mt-2 text-xs">2FA Code: Any 6 digits for admin/manager</p>
+            <p className="font-semibold">Demo Credentials:</p>
+            <div className="space-y-1 mt-2">
+              <p><span className="font-medium">Admin:</span> admin@paulstar.com / password123</p>
+              <p><span className="font-medium">Manager:</span> manager@paulstar.com / password123</p>
+              <p><span className="font-medium">Tech:</span> tech@paulstar.com / password123</p>
+            </div>
+            <p className="mt-3 text-xs opacity-75">2FA Code: Any 6 digits for admin/manager</p>
           </div>
         </CardContent>
       </Card>
